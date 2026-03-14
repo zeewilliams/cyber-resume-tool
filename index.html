@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cyber Resume Revamp Tool</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+/* ============================================================
+   DESIGN SYSTEM — Warm, Professional, Trustworthy
+   Clean navy + white + electric blue — inspired by premium
+   career platforms: confident, approachable, credible.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap');
+
+:root {
+  /* Core palette */
+  --navy:       #0f2044;
+  --navy2:      #162a55;
+  --navy3:      #1d3461;
+  --blue:       #2563eb;
+  --blue2:      #3b82f6;
+  --blue-lt:    #dbeafe;
+  --blue-faint: #eff6ff;
+  --teal:       #0891b2;
+  --teal-lt:    #e0f2fe;
+  --green:      #059669;
+  --green-lt:   #d1fae5;
+  --amber:      #d97706;
+  --amber-lt:   #fef3c7;
+  --red:        #dc2626;
+
+  /* Neutrals */
+  --white:      #ffffff;
+  --gray-50:    #f8fafc;
+  --gray-100:   #f1f5f9;
+  --gray-200:   #e2e8f0;
+  --gray-300:   #cbd5e1;
+  --gray-400:   #94a3b8;
+  --gray-500:   #64748b;
+  --gray-600:   #475569;
+  --gray-700:   #334155;
+  --gray-800:   #1e293b;
+  --gray-900:   #0f172a;
+
+  /* Text */
+  --txt-head:   #0f2044;
+  --txt-body:   #334155;
+  --txt-sub:    #64748b;
+  --txt-faint:  #94a3b8;
+
+  /* UI */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-xl:  0 24px 64px rgba(0,0,0,0.12);
+
+  --font:       'Plus Jakarta Sans', system-ui, sans-serif;
+  --serif:      'DM Serif Display', Georgia, serif;
+  --r:          10px;
+  --r-lg:       16px;
+  --ease:       0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--gray-50);
+  color: var(--txt-body);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.hdr {
+  background: var(--navy);
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.hdr-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 28px;
+  height: 66px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+.brand-logo {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--blue), #60a5fa);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+}
+
+.brand-text { color: #fff; }
+.brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+.brand-tagline { font-size: 11px; color: #93c5fd; letter-spacing: 0.5px; margin-top: -2px; }
+
+.hdr-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #93c5fd;
+  letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px #4ade80;
+  animation: livepulse 2s ease-in-out infinite;
+}
+
+@keyframes livepulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.5; transform:scale(0.7); }
+}
+
+/* ============================================================
+   HERO BANNER
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy3) 60%, #1a4a8a 100%);
+  padding: 56px 28px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(37,99,235,0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(8,145,178,0.15) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.hero-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px; font-weight: 600;
+  color: #bfdbfe;
+  letter-spacing: 0.3px;
+  margin-bottom: 20px;
+}
+
+.hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #60a5fa; }
+
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(30px, 5vw, 48px);
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.hero h1 span { color: #60a5fa; }
+
+.hero-sub {
+  font-size: 16px;
+  color: #bfdbfe;
+  max-width: 480px; margin: 0 auto 28px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex; align-items: center; justify-content: center;
+  gap: 28px; flex-wrap: wrap;
+}
+
+.h-stat {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #93c5fd; font-weight: 500;
+}
+
+.h-stat-icon { font-size: 16px; }
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+.wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 40px 28px 100px;
+}
+
+/* Step tracker */
+.steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 36px; flex-wrap: wrap; gap: 4px;
+}
+
+.step {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+  color: var(--txt-faint);
+  transition: all var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+
+.step.active {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-faint);
+}
+
+.step.done {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-lt);
+}
+
+.step-n {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0;
+}
+
+.step.done .step-n::before { content: '✓'; }
+.step.done .step-n { background: var(--green); border-color: var(--green); color: #fff; }
+
+.step-conn { width: 20px; height: 1.5px; background: var(--gray-200); margin: 0 2px; }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--ease), border-color var(--ease);
+  animation: slideUp 0.3s ease both;
+}
+
+.card:hover { box-shadow: var(--shadow-md); border-color: var(--gray-300); }
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.card:nth-child(2){ animation-delay:.05s; }
+.card:nth-child(3){ animation-delay:.10s; }
+.card:nth-child(4){ animation-delay:.15s; }
+.card:nth-child(5){ animation-delay:.20s; }
+
+.card-hd {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1.5px solid var(--gray-100);
+}
+
+.card-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.card-icon.blue   { background: var(--blue-lt); }
+.card-icon.teal   { background: var(--teal-lt); }
+.card-icon.green  { background: var(--green-lt); }
+.card-icon.amber  { background: var(--amber-lt); }
+.card-icon.navy   { background: #e0e7ff; }
+
+.card-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--txt-head);
+  letter-spacing: -0.2px;
+}
+
+.card-sub {
+  font-size: 12px; color: var(--txt-sub);
+  margin-top: 1px;
+}
+
+.card-badge {
+  margin-left: auto;
+  font-size: 11px; font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--blue-faint);
+  color: var(--blue);
+  border: 1px solid var(--blue-lt);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   DROP ZONE
+   ============================================================ */
+.dropzone {
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--r);
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--ease);
+  background: var(--gray-50);
+}
+
+.dropzone:hover, .dropzone.over {
+  border-color: var(--blue);
+  background: var(--blue-faint);
+}
+
+.dropzone input {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+
+.dz-icon {
+  font-size: 38px; display: block;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease;
+}
+
+.dropzone:hover .dz-icon, .dropzone.over .dz-icon { transform: translateY(-4px); }
+
+.dz-title {
+  font-size: 15px; font-weight: 600;
+  color: var(--txt-head); margin-bottom: 5px;
+}
+
+.dz-sub { font-size: 12px; color: var(--txt-sub); }
+
+.file-pill {
+  display: none;
+  align-items: center; gap: 10px;
+  background: var(--green-lt);
+  border: 1.5px solid #6ee7b7;
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 13px; font-weight: 500;
+  color: #065f46;
+}
+
+.file-pill.show { display: flex; }
+.file-pill-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ============================================================
+   FORM CONTROLS
+   ============================================================ */
+.field { margin-bottom: 16px; }
+
+label {
+  display: block;
+  font-size: 12px; font-weight: 600;
+  color: var(--txt-head);
+  margin-bottom: 6px;
+  letter-spacing: 0.1px;
+}
+
+input[type=url], input[type=text], select, textarea {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r);
+  color: var(--txt-body);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+  cursor: pointer;
+}
+
+textarea { resize: vertical; }
+
+.url-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+.url-num {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--blue-faint);
+  border: 1.5px solid var(--blue-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--blue);
+}
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:580px){ .grid2 { grid-template-columns:1fr; } }
+
+/* Info boxes */
+.infobox {
+  background: var(--blue-faint);
+  border: 1.5px solid var(--blue-lt);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 13px; color: #1e40af;
+  margin-bottom: 18px;
+  line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+
+.infobox-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ============================================================
+   PROJECT GRID
+   ============================================================ */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.proj-card {
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r);
+  padding: 14px;
+  cursor: pointer;
+  transition: all var(--ease);
+  background: var(--white);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.proj-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.proj-card.sel {
+  border-color: var(--blue);
+  background: var(--blue-faint);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.proj-card.sel::after {
+  content: '✓';
+  position: absolute; top: 10px; right: 12px;
+  width: 20px; height: 20px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+.pj-name { font-size: 12.5px; font-weight: 600; color: var(--txt-head); margin-bottom: 4px; padding-right: 22px; }
+.pj-tag  { font-size: 11px; color: var(--txt-sub); }
+
+.sel-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; flex-wrap: wrap; gap: 8px;
+}
+
+.sel-count {
+  font-size: 13px; font-weight: 500; color: var(--txt-sub);
+}
+
+.sel-count strong { color: var(--blue); font-size: 15px; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  border: 1.5px solid transparent;
+  border-radius: var(--r);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  transition: all var(--ease);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: var(--gray-300); color: var(--gray-500);
+  box-shadow: none; cursor: not-allowed; transform: none;
+}
+
+.btn-outline {
+  background: var(--white);
+  border-color: var(--gray-200);
+  color: var(--txt-body);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+
+.btn-ghost {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--txt-sub);
+}
+
+.btn-ghost:hover { background: var(--blue-faint); color: var(--blue); border-color: var(--blue-lt); }
+
+.btn-green {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(5,150,105,0.3);
+}
+
+.btn-green:hover { background: #047857; box-shadow: 0 4px 16px rgba(5,150,105,0.4); transform: translateY(-1px); }
+
+.gen-row { display: flex; justify-content: center; margin: 36px 0; }
+
+.btn-gen {
+  font-size: 15px; font-weight: 700;
+  padding: 16px 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+  letter-spacing: 0.3px;
+}
+
+.btn-gen:hover:not(:disabled) {
+  box-shadow: 0 8px 28px rgba(37,99,235,0.45);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   PROGRESS PANEL — The star of the show
+   ============================================================ */
+#progressPanel {
+  display: none;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin: 24px 0;
+  box-shadow: var(--shadow-md);
+}
+
+#progressPanel.show { display: block; }
+
+.pp-header {
+  background: linear-gradient(135deg, var(--navy), var(--navy3));
+  padding: 20px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+
+.pp-title {
+  font-size: 15px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.pp-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Big percentage display */
+.pp-pct-wrap {
+  display: flex; align-items: center; gap: 16px;
+}
+
+.pp-pct {
+  font-family: var(--serif);
+  font-size: 42px;
+  color: #fff;
+  line-height: 1;
+  min-width: 90px;
+  text-align: right;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+.pp-pct-label {
+  font-size: 11px; font-weight: 600;
+  color: #93c5fd; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Progress track */
+.pp-track-wrap { padding: 0 28px 6px; }
+
+.pp-track {
+  background: var(--gray-100);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.pp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), #60a5fa);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.pp-bar::after {
+  content: '';
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 40px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  border-radius: 0 999px 999px 0;
+}
+
+/* Step milestones */
+.pp-milestones {
+  display: flex; justify-content: space-between;
+  padding: 4px 28px 0;
+  margin-bottom: 2px;
+}
+
+.pp-milestone {
+  font-size: 10px; font-weight: 600;
+  color: var(--txt-faint);
+  text-align: center;
+  position: relative;
+  flex: 1;
+  transition: color 0.3s ease;
+}
+
+.pp-milestone.reached { color: var(--blue); }
+.pp-milestone.done-m  { color: var(--green); }
+
+/* Step-by-step log */
+.pp-steps {
+  padding: 16px 28px 24px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.pp-step-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--r);
+  font-size: 13px;
+  transition: all 0.3s ease;
+  opacity: 0.4;
+}
+
+.pp-step-item.active {
+  background: var(--blue-faint);
+  border: 1px solid var(--blue-lt);
+  opacity: 1;
+}
+
+.pp-step-item.done-step {
+  background: var(--green-lt);
+  border: 1px solid #a7f3d0;
+  opacity: 1;
+}
+
+.pp-step-item.error-step {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  opacity: 1;
+}
+
+.pp-step-ico {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+
+.pp-step-item.active  .pp-step-ico { background: var(--blue); color: #fff; }
+.pp-step-item.done-step .pp-step-ico { background: var(--green); color: #fff; }
+.pp-step-item.error-step .pp-step-ico { background: var(--red); color: #fff; }
+.pp-step-item:not(.active):not(.done-step):not(.error-step) .pp-step-ico {
+  background: var(--gray-100); color: var(--txt-faint);
+}
+
+.pp-step-body { flex: 1; }
+
+.pp-step-name {
+  font-weight: 600; color: var(--txt-head);
+  margin-bottom: 1px;
+}
+
+.pp-step-item:not(.active):not(.done-step) .pp-step-name { color: var(--txt-faint); }
+
+.pp-step-detail {
+  font-size: 11.5px; color: var(--txt-sub);
+}
+
+.pp-step-item.done-step .pp-step-detail { color: var(--green); }
+.pp-step-item.active    .pp-step-detail { color: var(--blue); }
+
+.pp-step-pct {
+  font-size: 12px; font-weight: 700;
+  color: var(--txt-faint);
+  min-width: 36px; text-align: right;
+}
+
+.pp-step-item.active    .pp-step-pct { color: var(--blue); }
+.pp-step-item.done-step .pp-step-pct { color: var(--green); }
+
+/* ETA row */
+.pp-eta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px 20px;
+  font-size: 12px; color: var(--txt-sub);
+  flex-wrap: wrap; gap: 8px;
+}
+
+.pp-eta-val { font-weight: 600; color: var(--txt-body); }
+.pp-status-badge {
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.pp-status-badge.processing { background: #dbeafe; color: var(--blue); }
+.pp-status-badge.done-badge { background: var(--green-lt); color: var(--green); }
+
+/* ============================================================
+   OUTPUT SECTION
+   ============================================================ */
+#out { display: none; }
+#out.show { display: block; }
+
+.out-header {
+  background: linear-gradient(135deg, #065f46, #047857);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  padding: 20px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+
+.out-title {
+  font-size: 16px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.out-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.out-body {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-top: none;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Resume paper */
+.resume-paper {
+  background: #fff;
+  color: #111;
+  border-radius: var(--r);
+  padding: 52px 60px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11.5px;
+  line-height: 1.5;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  max-width: 820px;
+  margin: 0 auto;
+  border: 1px solid var(--gray-200);
+}
+
+@media(max-width:600px) { .resume-paper { padding: 28px 20px; } }
+
+/* ── Resume Header ── */
+.rv-name {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #0a2540;
+  border-bottom: 2px solid #0a2540;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rv-contact {
+  font-size: 10.5px;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 0;
+  letter-spacing: 0.2px;
+}
+
+/* ── Section Headers ── */
+.rv-sec {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #0a2540;
+  border-bottom: 1.5px solid #999;
+  padding-bottom: 2px;
+  margin: 13px 0 6px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Summary ── */
+.rv-summary {
+  font-size: 11px;
+  color: #222;
+  line-height: 1.55;
+  text-align: justify;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Areas of Expertise — 3-column grid ── */
+.rv-exp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 8px;
+}
+
+.rv-exp-item {
+  font-size: 10.5px;
+  color: #222;
+  padding: 1px 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rv-exp-item::before { content: "• "; color: #0a2540; }
+
+/* ── Technical Proficiencies ── */
+.rv-tech-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  font-size: 10.5px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222;
+}
+
+.rv-tech-cat {
+  font-weight: 700;
+  color: #0a2540;
+}
+
+/* ── Education & Certs ── */
+.rv-edu, .rv-cert {
+  font-size: 11px;
+  color: #222;
+  margin-bottom: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Jobs ── */
+.rv-job { margin-bottom: 12px; }
+
+.rv-job-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rv-jtitle {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #0a2540;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rv-jcomp {
+  font-size: 11px;
+  color: #333;
+  font-style: italic;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 3px;
+}
+
+.rv-jdate {
+  font-size: 10.5px;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+.rv-ul { margin: 3px 0 0 16px; padding: 0; }
+.rv-ul li {
+  font-size: 11px;
+  color: #222;
+  margin-bottom: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+/* ── Projects ── */
+.rv-proj { margin-bottom: 12px; }
+
+.rv-ptitle {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #0a2540;
+  margin-bottom: 3px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rv-ptech {
+  font-size: 10px;
+  color: #555;
+  font-style: italic;
+  margin-top: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--gray-900);
+  border-radius: var(--r);
+  padding: 12px 20px;
+  font-size: 13px; font-weight: 500; color: #fff;
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 9999;
+  box-shadow: var(--shadow-lg);
+  max-width: 320px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--gray-100); }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="brand">
+      <div class="brand-logo">🛡️</div>
+      <div class="brand-text">
+        <div class="brand-name">Cyber Resume Revamp</div>
+        <div class="brand-tagline">IT & Cybersecurity Career Platform</div>
+      </div>
+    </div>
+    <div class="hdr-badge">
+      <div class="live-dot"></div>
+      Cyber Resume Revamp Tool
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip">
+      <div class="hero-chip-dot"></div>
+      ATS-Optimized · Cybersecurity Focused · Instant Results
+    </div>
+    <h1>Land Your Next <span>Cybersecurity</span> Role</h1>
+    <p class="hero-sub">Upload your existing resume, choose your target role, and get a fully optimized, keyword-rich cybersecurity resume instant results — no account needed.</p>
+    <div class="hero-stats">
+      <div class="h-stat"><span class="h-stat-icon">✅</span> 10 Specializations</div>
+      <div class="h-stat"><span class="h-stat-icon">🔬</span> 8 Lab Projects</div>
+      <div class="h-stat"><span class="h-stat-icon">⚡</span> Instant Generation</div>
+      <div class="h-stat"><span class="h-stat-icon">📄</span> PDF + TXT Export</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main class="wrap">
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="ts1"><div class="step-n">1</div>Upload</div>
+    <div class="step-conn"></div>
+    <div class="step" id="ts2"><div class="step-n">2</div>Job Info</div>
+    <div class="step-conn"></div>
+    <div class="step" id="ts3"><div class="step-n">3</div>Role</div>
+    <div class="step-conn"></div>
+    <div class="step" id="ts4"><div class="step-n">4</div>Projects</div>
+    <div class="step-conn"></div>
+    <div class="step" id="ts5"><div class="step-n">5</div>Done</div>
+  </div>
+
+  <!-- ── CARD 1: UPLOAD ── -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon blue">📄</div>
+      <div>
+        <div class="card-title">Step 1 — Upload Your Resume</div>
+        <div class="card-sub">We'll extract your info and rebuild it in a cybersecurity format</div>
+      </div>
+      <span class="card-badge">Required</span>
+    </div>
+
+    <div class="dropzone" id="dz">
+      <input type="file" id="fileIn" accept=".pdf,.docx,.txt" />
+      <span class="dz-icon">📂</span>
+      <div class="dz-title">Drag & drop your resume here</div>
+      <div class="dz-sub">Supports PDF · DOCX · TXT — Max 10MB</div>
+    </div>
+
+    <div class="file-pill" id="filePill">
+      <span>✅</span>
+      <span class="file-pill-name" id="pillName">file loaded</span>
+      <button class="btn btn-ghost" style="padding:4px 12px;font-size:11px;margin-left:auto;" onclick="clearFile()">Remove</button>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: JOB INFO ── -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon teal">🔗</div>
+      <div>
+        <div class="card-title">Step 2 — Target Job Postings</div>
+        <div class="card-sub">Paste up to 3 job URLs for keyword alignment</div>
+      </div>
+      <span class="card-badge" style="background:#f0f9ff;color:#0369a1;border-color:#bae6fd;">Optional</span>
+    </div>
+
+    <div class="infobox">
+      <span class="infobox-icon">💡</span>
+      <span>Paste job posting URLs so keywords from those roles are woven into your resume. If you skip this, the engine uses the full keyword library for your selected role instead.</span>
+    </div>
+
+    <div class="url-row">
+      <div class="url-num">1</div>
+      <input type="url" id="u1" placeholder="https://linkedin.com/jobs/view/..." />
+    </div>
+    <div class="url-row">
+      <div class="url-num">2</div>
+      <input type="url" id="u2" placeholder="https://indeed.com/viewjob?jk=..." />
+    </div>
+    <div class="url-row" style="margin-bottom:16px;">
+      <div class="url-num">3</div>
+      <input type="url" id="u3" placeholder="https://glassdoor.com/job-listing/..." />
+    </div>
+
+    <div class="field">
+      <label>Or describe the role / paste job description text</label>
+      <textarea id="jobDesc" rows="3" placeholder="e.g. SOC Analyst role requiring Splunk, Microsoft Sentinel, incident response, threat hunting, MITRE ATT&CK, CompTIA Security+..."></textarea>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: ROLE ── -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon navy">🎯</div>
+      <div>
+        <div class="card-title">Step 3 — Choose Your Target Role</div>
+        <div class="card-sub">Your resume will be tailored with role-specific skills and language</div>
+      </div>
+      <span class="card-badge">Required</span>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Cybersecurity Specialization</label>
+        <select id="roleSelect">
+          <option value="">— Select your role —</option>
+          <option>SOC Analyst</option>
+          <option>Cybersecurity Analyst</option>
+          <option>Incident Response Analyst</option>
+          <option>Threat Intelligence Analyst</option>
+          <option>GRC Analyst</option>
+          <option>Penetration Tester</option>
+          <option>Cloud Security Engineer</option>
+          <option>Security Engineer</option>
+          <option>Vulnerability Management Analyst</option>
+          <option>Digital Forensics Analyst</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Experience Level</label>
+        <select id="expLevel">
+          <option value="Entry-Level">Entry-Level (0–2 years)</option>
+          <option value="Mid-Level" selected>Mid-Level (2–5 years)</option>
+          <option value="Senior">Senior (5+ years)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: PROJECTS ── -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-icon green">🔬</div>
+      <div>
+        <div class="card-title">Step 4 — Select 3 Lab Projects</div>
+        <div class="card-sub">From your WHOP training platform — shows hands-on experience</div>
+      </div>
+      <span class="card-badge" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0;">Select 3</span>
+    </div>
+
+    <div class="infobox" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;">
+      <span class="infobox-icon">🏆</span>
+      <span>These lab projects are inserted into the <strong>Key Projects</strong> section of your resume. They prove real-world, hands-on skills that employers love — especially for entry to mid-level candidates.</span>
+    </div>
+
+    <div class="proj-grid" id="projGrid"></div>
+
+    <div class="sel-row">
+      <div class="sel-count">Selected: <strong id="selCount">0</strong> / 3</div>
+      <button class="btn btn-ghost" style="padding:7px 16px;font-size:12px;" onclick="autoSelect()">⚡ Auto-select for my role</button>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="gen-row">
+    <button class="btn btn-gen" id="genBtn" onclick="generate()">
+      🚀 &nbsp; Generate My Resume
+    </button>
+  </div>
+
+  <!-- ============================================================
+       PROGRESS PANEL
+       ============================================================ -->
+  <div id="progressPanel">
+
+    <!-- Header with big % -->
+    <div class="pp-header">
+      <div class="pp-title">
+        <div class="pp-spinner" id="ppSpinner"></div>
+        <span id="ppTitleText">Building your resume...</span>
+      </div>
+      <div class="pp-pct-wrap">
+        <div>
+          <div class="pp-pct-label">COMPLETE</div>
+          <div class="pp-pct" id="ppPctDisplay">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar + milestones -->
+    <div class="pp-track-wrap" style="padding-top:16px;">
+      <div class="pp-track">
+        <div class="pp-bar" id="ppBar"></div>
+      </div>
+    </div>
+    <div class="pp-milestones" id="ppMilestones">
+      <div class="pp-milestone" data-pct="0">Start</div>
+      <div class="pp-milestone" data-pct="20">Parse</div>
+      <div class="pp-milestone" data-pct="40">Extract</div>
+      <div class="pp-milestone" data-pct="60">Optimize</div>
+      <div class="pp-milestone" data-pct="80">Projects</div>
+      <div class="pp-milestone" data-pct="100">Done ✓</div>
+    </div>
+
+    <!-- Step-by-step items -->
+    <div class="pp-steps" id="ppSteps">
+      <div class="pp-step-item" id="pps-0">
+        <div class="pp-step-ico">1</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Parsing Resume File</div>
+          <div class="pp-step-detail">Extracting name, contact info, education, experience...</div>
+        </div>
+        <div class="pp-step-pct">0–20%</div>
+      </div>
+      <div class="pp-step-item" id="pps-1">
+        <div class="pp-step-ico">2</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Extracting Work History</div>
+          <div class="pp-step-detail">Identifying job titles, companies, dates, and responsibilities...</div>
+        </div>
+        <div class="pp-step-pct">20–40%</div>
+      </div>
+      <div class="pp-step-item" id="pps-2">
+        <div class="pp-step-ico">3</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Injecting Role Keywords</div>
+          <div class="pp-step-detail">Aligning content with target role requirements and ATS keywords...</div>
+        </div>
+        <div class="pp-step-pct">40–60%</div>
+      </div>
+      <div class="pp-step-item" id="pps-3">
+        <div class="pp-step-ico">4</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Enhancing Bullet Points</div>
+          <div class="pp-step-detail">Replacing weak language with strong cybersecurity action verbs...</div>
+        </div>
+        <div class="pp-step-pct">60–80%</div>
+      </div>
+      <div class="pp-step-item" id="pps-4">
+        <div class="pp-step-ico">5</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Inserting Lab Projects</div>
+          <div class="pp-step-detail">Adding WHOP lab projects to Key Projects section...</div>
+        </div>
+        <div class="pp-step-pct">80–95%</div>
+      </div>
+      <div class="pp-step-item" id="pps-5">
+        <div class="pp-step-ico">6</div>
+        <div class="pp-step-body">
+          <div class="pp-step-name">Finalizing & Formatting</div>
+          <div class="pp-step-detail">Applying ATS-friendly layout and professional structure...</div>
+        </div>
+        <div class="pp-step-pct">95–100%</div>
+      </div>
+    </div>
+
+    <!-- ETA row -->
+    <div class="pp-eta">
+      <div>Estimated time: <span class="pp-eta-val" id="ppEta">~5 seconds</span></div>
+      <div class="pp-status-badge processing" id="ppStatusBadge">Processing...</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       OUTPUT
+       ============================================================ -->
+  <div id="out">
+    <div class="out-header">
+      <div class="out-title">
+        🎉 Your Optimized Resume is Ready!
+      </div>
+      <div class="out-actions">
+        <button class="btn btn-primary" onclick="dlPDF()" style="background:#fff;color:#065f46;font-weight:700;">⬇ Download PDF</button>
+        <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:#fff;" onclick="dlDOCX()">⬇ Download TXT</button>
+        <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.3);color:#fff;" onclick="doCopy()">📋 Copy</button>
+      </div>
+    </div>
+    <div class="out-body">
+      <div style="text-align:center;margin-bottom:20px;">
+        <button class="btn btn-ghost" onclick="resetAll()" style="font-size:12px;">↺ Start Over / Make Another</button>
+      </div>
+      <div class="resume-paper" id="resumeOut"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const PROJECTS = [
+  {
+    id: 'ransomware',
+    name: 'Ransomware Lab',
+    tag: 'Incident Response / Malware Analysis',
+    bullets: [
+      'Simulated a real-world ransomware infection scenario to practice end-to-end Security Operations Center (SOC) incident response, from initial detection through containment, eradication, and recovery.',
+      'Analyzed Windows Event Logs, Sysmon telemetry, and process creation events to identify malicious encryption activity, ransom note deployment, and attacker persistence mechanisms.',
+      'Reconstructed the full ransomware attack timeline by correlating file modification events, PowerShell execution logs, and network connection artifacts to determine execution flow and blast radius.',
+      'Documented containment and recovery procedures including host isolation, forensic evidence preservation, backup restoration steps, and post-incident log monitoring improvements.'
+    ],
+    tech: 'Windows Event Viewer, Sysmon, Microsoft Defender, PowerShell, Wireshark, Splunk, MITRE ATT&CK'
+  },
+  {
+    id: 'wireless',
+    name: 'Wireless Threats Lab',
+    tag: 'Network Security / Wireless',
+    bullets: [
+      'Deployed and analyzed wireless threat scenarios including rogue access point attacks, evil twin configurations, and deauthentication (deauth) floods to understand attacker techniques targeting Wi-Fi infrastructure.',
+      'Captured and analyzed 802.11 wireless traffic using packet analysis tools to identify unauthorized devices, probe requests, and suspicious association patterns indicative of wireless intrusion attempts.',
+      'Implemented wireless intrusion detection countermeasures and configured monitoring tools to alert on rogue AP activity, MAC spoofing, and abnormal client behavior across the wireless network.',
+      'Documented findings and produced a wireless security assessment report with remediation recommendations including SSID hardening, 802.1X authentication, and client isolation policies.'
+    ],
+    tech: 'Wireshark, aircrack-ng, Kali Linux, wireless packet capture tools, 802.11 protocol analysis, network monitoring'
+  },
+  {
+    id: 'phishing',
+    name: 'Phishing & Social Engineering Lab',
+    tag: 'Threat Simulation / Security Awareness',
+    bullets: [
+      'Designed and executed simulated phishing campaigns to test organizational susceptibility to credential harvesting, spear-phishing, and business email compromise (BEC) attack scenarios.',
+      'Built and analyzed phishing email templates, spoofed login pages, and pretexting scripts to understand attacker tactics, techniques, and procedures (TTPs) used in social engineering campaigns.',
+      'Investigated phishing artifacts including email headers, embedded URLs, and payload delivery mechanisms to identify indicators of compromise (IOCs) and trace campaign infrastructure.',
+      'Developed security awareness recommendations and phishing defense controls including email filtering rules, DMARC/SPF/DKIM configurations, and user reporting procedures.'
+    ],
+    tech: 'GoPhish, email header analysis, OSINT tools, MITRE ATT&CK, SPF/DKIM/DMARC, Python scripting'
+  },
+  {
+    id: 'network',
+    name: 'Network Threat Analysis Lab',
+    tag: 'Network Security / Traffic Analysis',
+    bullets: [
+      'Performed comprehensive network threat analysis by capturing and dissecting live and simulated network traffic to identify malicious patterns, lateral movement, and data exfiltration attempts.',
+      'Analyzed packet captures (PCAPs) to detect port scanning activity, C2 beacon traffic, DNS tunneling, and suspicious protocol anomalies using industry-standard network forensics tools.',
+      'Correlated network-layer IOCs with host-based events to build end-to-end attack narratives, mapping observed behaviors to MITRE ATT&CK tactics including Discovery, Lateral Movement, and Command & Control.',
+      'Produced network threat analysis reports documenting detected attack patterns, affected hosts, traffic baselines, and recommended network segmentation and detection rule improvements.'
+    ],
+    tech: 'Wireshark, Zeek, Suricata, tcpdump, NetworkMiner, MITRE ATT&CK, Splunk, network PCAP analysis'
+  }
+];
+
+const ROLE_DATA = {
+  'SOC Analyst': {
+    keywords:['SIEM','threat detection','incident triage','alert analysis','log analysis','threat hunting','IOC identification','playbook execution','false positive reduction','escalation procedures'],
+    expertise:['Security Operations Center (SOC)','SIEM Monitoring & Tuning','Incident Triage & Escalation','Threat Detection & Hunting','Log Analysis & Correlation','Alert Investigation','Vulnerability Monitoring','IOC & TTPs Analysis','Security Tool Management','Threat Intelligence Integration','Playbook Development','Reporting & Documentation'],
+    tech:{'SIEM Tools':'Splunk, Microsoft Sentinel, IBM QRadar, Elastic SIEM','Security Tools':'CrowdStrike Falcon, Wireshark, Nmap, Nessus','Cloud Platforms':'Microsoft Azure, AWS Security Hub, Google Cloud','Operating Systems':'Windows Server 2019/2022, Kali Linux, Ubuntu Server','Frameworks':'MITRE ATT&CK, NIST CSF, CIS Controls v8','Languages/Scripting':'Python, PowerShell, Bash, KQL, Regex'},
+    summary:(n,e)=>`${e} cybersecurity professional specializing in Security Operations Center (SOC) functions including real-time threat monitoring, incident triage, and alert investigation using enterprise SIEM platforms. Demonstrated proficiency in analyzing security events across diverse log sources, identifying indicators of compromise (IOCs), and executing incident response playbooks to contain and remediate threats. Adept at reducing mean time to detect (MTTD) and mean time to respond (MTTR) through proactive threat hunting and continuous tuning of detection rules. Committed to protecting organizational assets by leveraging data-driven analysis and staying current with the evolving threat landscape.`},
+  'Cybersecurity Analyst': {
+    keywords:['risk assessment','vulnerability analysis','security monitoring','threat landscape','security controls','compliance','NIST','CIS Controls','security posture','gap analysis'],
+    expertise:['Security Risk Assessment','Vulnerability Analysis','Security Monitoring','Compliance Management','Threat Landscape Analysis','Security Control Implementation','Policy & Procedure Development','Incident Response Support','Security Awareness','Gap Analysis & Remediation','Technical Documentation','Stakeholder Reporting'],
+    tech:{'Security Tools':'Nessus, Qualys, Splunk, Microsoft Defender, Wireshark','Cloud Platforms':'Microsoft Azure, AWS, GCP Security Services','Operating Systems':'Windows Server, Kali Linux, Ubuntu, macOS','Frameworks':'NIST CSF, NIST 800-53, CIS Controls, ISO 27001, MITRE ATT&CK','Languages/Scripting':'Python, PowerShell, Bash','Ticketing/GRC':'ServiceNow, Jira, RSA Archer, OneTrust'},
+    summary:(n,e)=>`${e} Cybersecurity Analyst with comprehensive experience in security monitoring, risk assessment, and vulnerability management across enterprise environments. Skilled at identifying security gaps, implementing compensating controls, and aligning security practices with industry frameworks including NIST CSF, CIS Controls, and ISO 27001. Proven ability to investigate security incidents, analyze threat data, and produce actionable reports for both technical teams and executive leadership. Passionate about strengthening organizational security posture through proactive analysis, continuous improvement, and cross-functional collaboration.`},
+  'Incident Response Analyst': {
+    keywords:['incident response','digital forensics','containment','eradication','root cause analysis','chain of custody','MITRE ATT&CK','IOC','post-incident review','threat actor TTPs'],
+    expertise:['Incident Response Lifecycle','Digital Forensics & Evidence Collection','Malware Analysis & Triage','Threat Containment & Eradication','Root Cause Analysis','MITRE ATT&CK Mapping','Chain of Custody Procedures','Post-Incident Reporting','IOC Extraction & Enrichment','Memory & Disk Forensics','Network Traffic Analysis','Playbook Development'],
+    tech:{'Forensics Tools':'Autopsy, FTK, Volatility, Redline, KAPE','SIEM/Detection':'Splunk, Microsoft Sentinel, Elastic SIEM','Malware Analysis':'REMnux, Any.run, Ghidra, YARA, VirusTotal','Network Analysis':'Wireshark, Zeek, Suricata, Snort','Frameworks':'MITRE ATT&CK, NIST 800-61, PICERL, SANS IR','Scripting':'Python, PowerShell, Bash'},
+    summary:(n,e)=>`${e} Incident Response Analyst with hands-on expertise in managing the full incident response lifecycle — from initial detection and triage through containment, eradication, recovery, and post-incident review. Experienced in digital forensics, malware analysis, and mapping adversary TTPs to the MITRE ATT&CK framework to accelerate investigations and improve future defenses. Proficient in collecting and preserving digital evidence in accordance with chain-of-custody procedures, conducting root cause analysis, and delivering comprehensive incident reports to technical and executive stakeholders. Dedicated to minimizing organizational impact through rapid, methodical response and continuous improvement of IR capabilities.`},
+  'Threat Intelligence Analyst': {
+    keywords:['threat intelligence','OSINT','APT tracking','threat actors','TTPs','IOC','MISP','intelligence cycle','threat reports','diamond model','kill chain'],
+    expertise:['Threat Intelligence Collection & Analysis','OSINT Research & Profiling','APT Group Tracking','IOC Enrichment & Correlation','Intelligence Cycle Management','MITRE ATT&CK Mapping','Threat Feed Integration','Strategic Intelligence Reporting','Malware Family Analysis','Adversary TTP Profiling','Diamond Model Analysis','Kill Chain Mapping'],
+    tech:{'Intelligence Platforms':'MISP, OpenCTI, ThreatConnect, Anomali','OSINT Tools':'Shodan, Maltego, SpiderFoot, AlienVault OTX','Analysis Tools':'MITRE ATT&CK Navigator, VirusTotal, Any.run','SIEM Integration':'Splunk, Microsoft Sentinel, IBM QRadar','Frameworks':'MITRE ATT&CK, Diamond Model, Cyber Kill Chain','Languages':'Python, STIX/TAXII, JSON, Regex'},
+    summary:(n,e)=>`${e} Threat Intelligence Analyst skilled in the full intelligence cycle — from collection and processing of OSINT and commercial feeds through analysis, production, and dissemination of actionable intelligence products. Experienced in profiling advanced persistent threat (APT) groups, tracking campaigns targeting specific sectors, and mapping adversary TTPs to the MITRE ATT&CK framework. Proficient in integrating threat indicators into SIEM and TIP platforms to enhance detection capabilities and enrich incident investigations. Delivers strategic, operational, and tactical intelligence reports that enable security teams and leadership to make informed, risk-based decisions.`},
+  'GRC Analyst': {
+    keywords:['governance','risk management','compliance','NIST','ISO 27001','SOC 2','risk register','audit','policy development','controls assessment','third-party risk','security frameworks'],
+    expertise:['Governance, Risk & Compliance (GRC)','Risk Assessment & Register Management','Security Policy Development','Compliance Program Management','Audit Preparation & Support','Third-Party Risk Management','Security Controls Assessment','NIST & ISO Framework Alignment','Business Impact Analysis','Security Awareness Programs','Regulatory Compliance','Executive Risk Reporting'],
+    tech:{'GRC Platforms':'RSA Archer, ServiceNow GRC, OneTrust, LogicGate','Compliance Frameworks':'NIST CSF, NIST 800-53, ISO 27001, SOC 2, HIPAA, PCI-DSS','Risk Tools':'FAIR, OCTAVE, threat modeling tools','Productivity':'Microsoft 365, SharePoint, Power BI, Jira','Security Tools':'Nessus, Qualys, Splunk (compliance reporting)','Documentation':'Policy templates, risk registers, control matrices'},
+    summary:(n,e)=>`${e} GRC Analyst with expertise in building and managing governance, risk, and compliance programs aligned to industry-leading frameworks including NIST CSF, NIST 800-53, ISO 27001, and SOC 2. Experienced in conducting risk assessments, developing security policies, supporting internal and external audits, and implementing security controls to reduce organizational risk exposure. Skilled at communicating risk findings to executive leadership through clear reporting and risk registers, enabling data-driven security investment decisions. Committed to maintaining a culture of compliance and continuous improvement across all business units.`},
+  'Penetration Tester': {
+    keywords:['penetration testing','ethical hacking','vulnerability exploitation','red team','social engineering','OWASP','Metasploit','privilege escalation','lateral movement','report writing'],
+    expertise:['Network Penetration Testing','Web Application Security Testing','Active Directory Attacks & Defense','Red Team Operations','Social Engineering Simulations','Privilege Escalation Techniques','Lateral Movement & Persistence','OWASP Top 10 Testing','Vulnerability Research & Exploitation','Post-Exploitation & Pivoting','Custom Payload Development','Pentest Report Writing'],
+    tech:{'Exploitation':'Metasploit Framework, ExploitDB, custom scripts','Recon & Scanning':'Nmap, Masscan, Shodan, Amass, Recon-ng','Web Testing':'Burp Suite Pro, OWASP ZAP, SQLmap, Nikto','Active Directory':'BloodHound, Mimikatz, Impacket, Rubeus, CrackMapExec','Platforms':'Kali Linux, ParrotOS, Windows, HackTheBox, TryHackMe','Languages':'Python, Bash, PowerShell, Ruby'},
+    summary:(n,e)=>`${e} Penetration Tester and ethical hacking professional with demonstrated expertise in identifying and exploiting vulnerabilities across network infrastructure, web applications, and Active Directory environments. Proficient in executing full-scope penetration tests following PTES and OWASP methodologies — from intelligence gathering and enumeration through exploitation, post-exploitation, and professional reporting. Experienced in simulating advanced persistent threat (APT) techniques including lateral movement, privilege escalation, and persistence to identify critical security gaps before malicious actors can exploit them. Dedicated to delivering actionable findings that drive meaningful security improvements.`},
+  'Cloud Security Engineer': {
+    keywords:['cloud security','AWS','Azure','GCP','IAM','zero trust','CSPM','DevSecOps','container security','Kubernetes','Terraform','cloud-native security'],
+    expertise:['Cloud Security Architecture','Identity & Access Management (IAM)','Zero Trust Implementation','Cloud Security Posture Management','DevSecOps Integration','Container & Kubernetes Security','Infrastructure as Code Security','Cloud Compliance & Governance','Network Security Groups & Policies','Secrets Management','Cloud Incident Response','Multi-Cloud Security Strategy'],
+    tech:{'Cloud Platforms':'Microsoft Azure, AWS, Google Cloud Platform (GCP)','Security Services':'Azure Defender, AWS GuardDuty, AWS Security Hub, GCP Security Command Center','IaC & DevSecOps':'Terraform, Ansible, GitHub Actions, Jenkins, Checkov','Container Security':'Docker, Kubernetes, Aqua Security, Trivy, Falco','CSPM Tools':'Prisma Cloud, Wiz, Orca Security, Lacework','Languages':'Python, Bash, PowerShell, YAML, JSON'},
+    summary:(n,e)=>`${e} Cloud Security Engineer with expertise in designing, implementing, and maintaining security architectures across multi-cloud environments including Microsoft Azure, AWS, and Google Cloud Platform. Skilled in enforcing cloud security best practices through IAM policy management, zero trust architecture, CSPM tooling, and DevSecOps integration within CI/CD pipelines. Experienced in securing containerized workloads, infrastructure-as-code (IaC), and cloud-native applications while ensuring compliance with regulatory frameworks and organizational security standards. Passionate about building security guardrails that enable development velocity without sacrificing protection.`},
+  'Security Engineer': {
+    keywords:['security architecture','network security','firewall','IDS/IPS','zero trust','encryption','PKI','security automation','threat modeling','hardening'],
+    expertise:['Security Architecture Design','Network Security & Segmentation','Firewall & IDS/IPS Management','Zero Trust Architecture','PKI & Certificate Management','Threat Modeling & Risk Analysis','Security Automation & Orchestration','Endpoint Protection','Vulnerability Management','Security Hardening','SIEM Engineering','Incident Response Support'],
+    tech:{'Network Security':'Palo Alto, Cisco ASA, Fortinet, Check Point, pfSense','Detection':'Snort, Suricata, Zeek, CrowdStrike, Microsoft Defender','SIEM/SOAR':'Splunk, Microsoft Sentinel, IBM QRadar, Palo Alto XSOAR','Cloud':'Azure, AWS, GCP security-native services','Frameworks':'NIST, Zero Trust (NIST 800-207), CIS Benchmarks, MITRE ATT&CK','Languages':'Python, PowerShell, Bash, Terraform'},
+    summary:(n,e)=>`${e} Security Engineer with a strong foundation in designing, deploying, and operating enterprise security infrastructure including next-generation firewalls, intrusion detection/prevention systems, endpoint protection platforms, and SIEM architectures. Experienced in implementing zero trust frameworks, conducting threat modeling for new system designs, and driving security automation to enhance detection and response capabilities at scale. Proficient in securing both on-premises and cloud-hybrid environments while maintaining compliance with industry frameworks. Committed to engineering resilient, defense-in-depth security solutions that protect critical business assets.`},
+  'Vulnerability Management Analyst': {
+    keywords:['vulnerability scanning','Nessus','Qualys','CVSS','patch management','risk prioritization','remediation tracking','asset inventory','CVE','exploit probability'],
+    expertise:['Vulnerability Assessment & Scanning','Risk-Based Prioritization (CVSS/EPSS)','Patch Management Coordination','Asset Discovery & Inventory','Remediation Tracking & SLA Management','Threat Intelligence Integration','Executive Risk Reporting','Configuration & Compliance Scanning','False Positive Analysis','Security Metrics & KPIs','Vulnerability Research','Cross-Team Remediation Coordination'],
+    tech:{'Scanning Tools':'Nessus Pro/Tenable.io, Qualys VMDR, Rapid7 InsightVM','Patch Management':'WSUS, SCCM, Intune, Tanium','Ticketing':'Jira, ServiceNow, Remedy','Risk Scoring':'CVSS 3.1, EPSS, VPR (Tenable)','SIEM Integration':'Splunk, Microsoft Sentinel','Languages':'Python, PowerShell, Bash, SQL'},
+    summary:(n,e)=>`${e} Vulnerability Management Analyst with expertise in designing and operating enterprise vulnerability management programs across complex, multi-environment infrastructures. Proficient in conducting authenticated and unauthenticated scans using Nessus and Qualys, risk-prioritizing findings using CVSS and EPSS scoring, and driving cross-functional remediation workflows with IT and engineering teams. Experienced in establishing SLA frameworks, building executive vulnerability dashboards, and integrating vulnerability data with SIEM platforms to provide contextual threat awareness. Dedicated to measurably reducing organizational attack surface through systematic, data-driven vulnerability lifecycle management.`},
+  'Digital Forensics Analyst': {
+    keywords:['digital forensics','evidence collection','chain of custody','disk imaging','memory forensics','e-discovery','log analysis','timeline reconstruction','Autopsy','FTK'],
+    expertise:['Digital Evidence Collection & Preservation','Chain of Custody Management','Disk & File System Forensics','Memory Forensics & Analysis','Network Forensics','Malware Artifact Analysis','Timeline Reconstruction','E-Discovery Support','Expert Witness Documentation','Forensic Report Writing','Log Analysis & Correlation','Incident Investigation Support'],
+    tech:{'Forensic Tools':'Autopsy, FTK/FTK Imager, EnCase, AXIOM','Memory Analysis':'Volatility 3, Rekall, DumpIt','Network Forensics':'Wireshark, Zeek, NetworkMiner, tcpdump','Disk Tools':'dd, dcfldd, Sleuth Kit, X-Ways Forensics','Frameworks':'NIST 800-86, RFC 3227, ACPO Guidelines','Languages':'Python, Bash, PowerShell, Regex'},
+    summary:(n,e)=>`${e} Digital Forensics Analyst with specialized expertise in collecting, preserving, and analyzing digital evidence from diverse sources including hard drives, memory, network captures, and cloud environments. Experienced in maintaining strict chain of custody procedures, conducting timeline reconstructions, and performing root cause analysis to support incident response investigations and legal proceedings. Proficient in using industry-standard forensic tools including Autopsy, FTK, and Volatility, with hands-on experience in malware artifact analysis and e-discovery support. Committed to delivering thorough, defensible forensic investigations that provide clear evidentiary findings for technical teams and legal stakeholders.`}
+};
+
+const VERBS = {
+  detect: ['Detected','Identified','Flagged','Uncovered','Recognized','Discovered'],
+  respond:['Responded','Investigated','Triaged','Analyzed','Contained','Mitigated'],
+  build:  ['Implemented','Deployed','Architected','Developed','Engineered','Designed'],
+  improve:['Optimized','Reduced','Enhanced','Improved','Streamlined','Automated'],
+  manage: ['Managed','Coordinated','Led','Maintained','Oversaw','Administered'],
+  report: ['Documented','Reported','Communicated','Presented','Produced','Authored'],
+  monitor:['Monitored','Tracked','Reviewed','Assessed','Evaluated','Audited'],
+  protect:['Hardened','Secured','Protected','Remediated','Patched','Enforced']
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let resumeText = '', resumeFileName = '';
+let selectedProjs = new Set();
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  renderProjects();
+  setupDrop();
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+});
+
+// ─────────────────────────────────────────────
+// PROJECTS
+// ─────────────────────────────────────────────
+function renderProjects() {
+  document.getElementById('projGrid').innerHTML = PROJECTS.map(p => `
+    <div class="proj-card ${selectedProjs.has(p.id)?'sel':''}" onclick="toggleProj('${p.id}')">
+      <div class="pj-name">${p.name}</div>
+      <div class="pj-tag">${p.tag}</div>
+    </div>`).join('');
+  document.getElementById('selCount').textContent = selectedProjs.size;
+}
+
+function toggleProj(id) {
+  if (selectedProjs.has(id)) selectedProjs.delete(id);
+  else { if (selectedProjs.size >= 3) { toast('Deselect one project first','error'); return; } selectedProjs.add(id); }
+  renderProjects();
+}
+
+function autoSelect() {
+  selectedProjs.clear();
+  const role = document.getElementById('roleSelect').value;
+  const relMap = {
+    'SOC Analyst':                  ['ransomware','network','wireless'],
+    'Cybersecurity Analyst':        ['network','phishing','ransomware'],
+    'Incident Response Analyst':    ['ransomware','network','phishing'],
+    'Threat Intelligence Analyst':  ['phishing','network','ransomware'],
+    'GRC Analyst':                  ['phishing','ransomware','network'],
+    'Penetration Tester':           ['wireless','phishing','network'],
+    'Cloud Security Engineer':      ['network','ransomware','phishing'],
+    'Security Engineer':            ['wireless','network','ransomware'],
+    'Vulnerability Management Analyst': ['network','ransomware','wireless'],
+    'Digital Forensics Analyst':    ['ransomware','network','wireless']
+  };
+  const preferred = relMap[role] || [];
+  [...PROJECTS].sort((a,b) => preferred.indexOf(b.id)-preferred.indexOf(a.id))
+               .slice(0,3).forEach(p => selectedProjs.add(p.id));
+  renderProjects();
+  toast('3 projects selected for ' + (role||'your role'), 'success');
+}
+
+// ─────────────────────────────────────────────
+// FILE HANDLING
+// ─────────────────────────────────────────────
+function setupDrop() {
+  const dz = document.getElementById('dz');
+  const fi = document.getElementById('fileIn');
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  fi.addEventListener('change', () => { if (fi.files[0]) handleFile(fi.files[0]); });
+}
+
+async function handleFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['pdf','docx','txt'].includes(ext)) { toast('Please use PDF, DOCX, or TXT','error'); return; }
+  toast('Reading ' + file.name + '...');
+  try {
+    if (ext==='txt')  resumeText = await file.text();
+    else if (ext==='pdf')  resumeText = await parsePDF(file);
+    else if (ext==='docx') resumeText = await parseDOCX(file);
+    resumeFileName = file.name;
+    document.getElementById('pillName').textContent = `${file.name}  (${(file.size/1024).toFixed(1)} KB)`;
+    document.getElementById('filePill').classList.add('show');
+    document.getElementById('dz').style.opacity = '0.6';
+    setStep(1,'done'); setStep(2,'active');
+    toast('Resume uploaded successfully! ✓','success');
+  } catch(e) { toast('Error reading file: '+e.message,'error'); }
+}
+
+async function parsePDF(file) {
+  const ab = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data:ab}).promise;
+  let t = '';
+  for (let i=1; i<=pdf.numPages; i++) {
+    const pg = await pdf.getPage(i);
+    t += (await pg.getTextContent()).items.map(s=>s.str).join(' ') + '\n';
+  }
+  return t;
+}
+
+async function parseDOCX(file) {
+  return (await mammoth.extractRawText({arrayBuffer: await file.arrayBuffer()})).value;
+}
+
+function clearFile() {
+  resumeText = ''; resumeFileName = '';
+  document.getElementById('fileIn').value = '';
+  document.getElementById('filePill').classList.remove('show');
+  document.getElementById('dz').style.opacity = '1';
+  setStep(1,'active');
+}
+
+// ─────────────────────────────────────────────
+// STEP TRACKER
+// ─────────────────────────────────────────────
+function setStep(n, state) {
+  document.getElementById('ts'+n).className = 'step ' + state;
+}
+
+// ─────────────────────────────────────────────
+// VALIDATION
+// ─────────────────────────────────────────────
+function validate() {
+  if (!resumeText.trim()) return 'Please upload your resume file first.';
+  if (!document.getElementById('roleSelect').value) return 'Please select your target cybersecurity role.';
+  if (selectedProjs.size !== 3) return 'Please select exactly 3 lab projects.';
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// PROGRESS SYSTEM
+// ─────────────────────────────────────────────
+let currentPct = 0;
+let pctInterval = null;
+
+function startProgressPanel() {
+  document.getElementById('progressPanel').classList.add('show');
+  document.getElementById('out').className = '';
+  currentPct = 0;
+  updatePct(0);
+  // Reset all steps
+  for (let i=0; i<6; i++) {
+    const el = document.getElementById('pps-'+i);
+    el.className = 'pp-step-item';
+  }
+  updateMilestones(0);
+}
+
+function updatePct(target) {
+  // Smoothly animate from currentPct to target
+  if (pctInterval) clearInterval(pctInterval);
+  const start = currentPct;
+  const diff  = target - start;
+  const steps = 30;
+  let step = 0;
+  pctInterval = setInterval(() => {
+    step++;
+    const eased = start + diff * (1 - Math.pow(1 - step/steps, 3));
+    const val = Math.round(eased);
+    document.getElementById('ppPctDisplay').textContent = val + '%';
+    document.getElementById('ppBar').style.width = val + '%';
+    updateMilestones(val);
+    if (step >= steps) {
+      clearInterval(pctInterval);
+      currentPct = target;
+      document.getElementById('ppPctDisplay').textContent = target + '%';
+      document.getElementById('ppBar').style.width = target + '%';
+      updateMilestones(target);
+    }
+  }, 16);
+}
+
+function updateMilestones(pct) {
+  document.querySelectorAll('.pp-milestone').forEach(m => {
+    const mp = parseInt(m.dataset.pct);
+    m.classList.remove('reached','done-m');
+    if (mp <= pct && pct < 100) m.classList.add('reached');
+    else if (pct === 100) m.classList.add('done-m');
+  });
+}
+
+function activateStep(idx, detail) {
+  // Mark previous done
+  if (idx > 0) {
+    const prev = document.getElementById('pps-'+(idx-1));
+    prev.className = 'pp-step-item done-step';
+    prev.querySelector('.pp-step-ico').textContent = '✓';
+    const pd = prev.querySelector('.pp-step-detail');
+    if (pd) pd.textContent = 'Complete ✓';
+  }
+  // Activate current
+  const el = document.getElementById('pps-'+idx);
+  el.className = 'pp-step-item active';
+  if (detail) el.querySelector('.pp-step-detail').textContent = detail;
+  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function finishAllSteps() {
+  for (let i=0; i<6; i++) {
+    const el = document.getElementById('pps-'+i);
+    el.className = 'pp-step-item done-step';
+    el.querySelector('.pp-step-ico').textContent = '✓';
+  }
+  document.getElementById('ppSpinner').style.display = 'none';
+  document.getElementById('ppTitleText').textContent = 'Resume successfully generated!';
+  document.getElementById('ppStatusBadge').className = 'pp-status-badge done-badge';
+  document.getElementById('ppStatusBadge').textContent = '✓ Complete';
+  document.getElementById('ppEta').textContent = 'Done!';
+}
+
+// ─────────────────────────────────────────────
+// GENERATE
+// ─────────────────────────────────────────────
+async function generate() {
+  const err = validate();
+  if (err) { toast(err,'error'); return; }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = '⏳  Building your resume...';
+
+  const role    = document.getElementById('roleSelect').value;
+  const exp     = document.getElementById('expLevel').value;
+  const projs   = PROJECTS.filter(p => selectedProjs.has(p.id));
+  const rd      = ROLE_DATA[role];
+
+  startProgressPanel();
+  document.getElementById('progressPanel').scrollIntoView({behavior:'smooth'});
+  document.getElementById('ppEta').textContent = '~5–8 seconds';
+
+  // ── Step 0: Parse resume (0→20%)
+  activateStep(0, `Reading ${resumeFileName || 'your resume'}...`);
+  updatePct(5);
+  await sleep(300);
+  const parsed = parseResume(resumeText);
+  updatePct(18);
+  await sleep(250);
+  activateStep(0, `Found: ${parsed.name} | ${parsed.jobs.length} job(s) | ${parsed.certifications.length} cert(s)`);
+  updatePct(20);
+  await sleep(200);
+
+  // ── Step 1: Work history (20→40%)
+  activateStep(1, `Processing ${parsed.jobs.length} position(s)...`);
+  updatePct(28);
+  await sleep(300);
+  updatePct(38);
+  await sleep(200);
+  activateStep(1, `Extracted ${parsed.jobs.reduce((s,j)=>s+j.bullets.length,0)} experience bullet points`);
+  updatePct(40);
+  await sleep(150);
+
+  // ── Step 2: Inject keywords (40→60%)
+  activateStep(2, `Injecting ${rd.keywords.length} keywords for ${role}...`);
+  updatePct(48);
+  await sleep(300);
+  updatePct(58);
+  await sleep(200);
+  activateStep(2, `Role keywords and skills injected`);
+  updatePct(60);
+  await sleep(150);
+
+  // ── Step 3: Enhance bullets + AI rewrite (60→80%)
+  activateStep(3, 'Enhancing bullets and optimizing resume content...');
+  updatePct(65);
+  await sleep(200);
+
+  // Enhance bullets locally first
+  for (const job of parsed.jobs) {
+    job.bullets = enhanceBullets(job.bullets, rd.keywords, role);
+  }
+
+  // Try AI enhancement via secure backend
+  const jobDesc = document.getElementById('jobDesc').value.trim();
+  const urls    = [document.getElementById('u1').value.trim(),
+                   document.getElementById('u2').value.trim(),
+                   document.getElementById('u3').value.trim()].filter(Boolean);
+  try {
+    activateStep(3, 'Optimizing your content...');
+    updatePct(70);
+    const aiText = await callServerAPI({ parsed, rd, role, exp, projs, jobDesc, urls });
+    if (aiText) {
+      applyAIEnhancements(parsed, aiText);
+      activateStep(3, 'AI optimization applied ✓');
+    } else {
+      activateStep(3, 'Template optimization applied');
+    }
+  } catch(e) {
+    // Silently fall back to template-enhanced version
+    activateStep(3, 'Template optimization applied');
+  }
+  updatePct(80);
+  await sleep(150);
+
+  // ── Step 4: Insert projects (80→95%)
+  activateStep(4, `Embedding ${projs.length} WHOP lab projects...`);
+  updatePct(86);
+  await sleep(300);
+  updatePct(93);
+  await sleep(200);
+  activateStep(4, projs.map(p=>p.name).join(', '));
+  updatePct(95);
+  await sleep(150);
+
+  // ── Step 5: Format (95→100%)
+  activateStep(5, 'Applying ATS structure and professional layout...');
+  updatePct(98);
+  await sleep(400);
+
+  // Build HTML
+  const html = buildResumeHTML(parsed, rd, role, exp, projs);
+  document.getElementById('resumeOut').innerHTML = html;
+
+  updatePct(100);
+  await sleep(300);
+  finishAllSteps();
+
+  document.getElementById('out').className = 'show';
+  setStep(5,'done');
+
+  btn.disabled = false; btn.textContent = '🚀  Generate My Resume';
+  await sleep(600);
+  document.getElementById('out').scrollIntoView({behavior:'smooth'});
+  toast('Your resume is ready! 🎉','success');
+}
+
+
+// ─────────────────────────────────────────────
+// AI CALL — hits our secure Vercel backend
+// ─────────────────────────────────────────────
+async function callServerAPI({ parsed, rd, role, exp, projs, jobDesc, urls }) {
+  const projectDetails = projs.map(p =>
+    `PROJECT: ${p.name}\nBullets:\n${p.bullets.map(b => '- ' + b).join('\n')}\nTech: ${p.tech}`
+  ).join('\n\n');
+
+  const jobContext = urls.length
+    ? `Target job URLs: ${urls.join(', ')}\n${jobDesc ? 'Additional context: ' + jobDesc : ''}`
+    : (jobDesc || `Target role: ${role}`);
+
+  const currentBullets = parsed.jobs.map(j =>
+    `${j.title} at ${j.company}:\n${j.bullets.map(b => '- ' + b).join('\n')}`
+  ).join('\n\n');
+
+  const prompt = `You are an expert cybersecurity resume writer. Optimize these work experience bullets for a ${exp} ${role} role.
+
+TARGET ROLE: ${role}
+KEY KEYWORDS TO WEAVE IN: ${rd.keywords.join(', ')}
+JOB CONTEXT: ${jobContext}
+
+CURRENT EXPERIENCE BULLETS:
+${currentBullets}
+
+INSTRUCTIONS:
+- Rewrite each bullet with strong cybersecurity action verbs
+- Weave in relevant keywords naturally
+- Add quantified impact where plausible (%, time saved, coverage, etc.)
+- Keep each bullet to 1-2 lines max
+- Make every bullet show business/security impact
+
+Return ONLY a JSON array of job objects in this exact format, no other text:
+[{"title":"Job Title","company":"Company","dates":"Dates","bullets":["bullet1","bullet2"]}]`;
+
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+
+  if (!res.ok) throw new Error('API call failed: ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.result;
+}
+
+// Apply AI-enhanced bullets back onto the parsed object
+function applyAIEnhancements(parsed, aiText) {
+  try {
+    // Strip any markdown code fences if present
+    const clean = aiText.replace(/```json|```/g, '').trim();
+    const jobs  = JSON.parse(clean);
+    if (!Array.isArray(jobs)) return;
+    jobs.forEach((aiJob, i) => {
+      if (parsed.jobs[i] && Array.isArray(aiJob.bullets) && aiJob.bullets.length) {
+        parsed.jobs[i].bullets = aiJob.bullets;
+      }
+    });
+  } catch(e) {
+    // JSON parse failed — keep template-enhanced bullets, no crash
+    console.warn('AI response parse failed, keeping template bullets:', e.message);
+  }
+}
+
+// ─────────────────────────────────────────────
+// RESUME PARSING — robust real-world PDF parser
+// ─────────────────────────────────────────────
+function parseResume(text) {
+  // ── STEP 1: Rejoin split lines ──
+  // PDFs often split a single logical line across multiple lines.
+  // Key pattern: category header on one line, value on next (tech proficiencies)
+  // Also: cert name on one line, date on next line
+
+  // First pass: collapse double-newlines into single, then work line by line
+  let t = text.replace(/\r/g, '');
+
+  // Rejoin tech proficiency split lines: "Category:\n\nValue" → "Category: Value"
+  t = t.replace(/([A-Za-z &\/]+:)\s*\n+\s*([A-Za-z(])/g, '$1 $2');
+
+  // Rejoin cert lines split from their dates: "CompTIA CySA+ | CompTIA\nExp. 10/2028" → single line
+  t = t.replace(/(CompTIA[^\n]+\|[^\n]*)\n+\s*(Exp\.\s*\d+\/\d+)/g, '$1 $2');
+  t = t.replace(/(ISC2[^\n]+\|[^\n]*)\n+\s*(Exp\.\s*\d+\/\d+)/g, '$1 $2');
+  t = t.replace(/([A-Z]{2,}[^\n]+\|[^\n]{1,30})\n+\s*(Exp\.\s*\d+\/\d+)/g, '$1 $2');
+  t = t.replace(/(Associate[^\n]+)\n+\s*(\d{4})/g, '$1 $2');
+  t = t.replace(/(High School[^\n]+)\n+\s*(\d{4})/g, '$1 $2');
+  t = t.replace(/(Bachelor[^\n]+)\n+\s*(\d{4})/g, '$1 $2');
+  t = t.replace(/(Master[^\n]+)\n+\s*(\d{4})/g, '$1 $2');
+
+  // Rejoin job title from date on next line: "Title | Company\n6/2015 – 12/2020"
+  t = t.replace(/(\|[^\n]+)\n+\s*(\d{1,2}\/\d{4}\s*[–\-—to]+\s*(?:\d{1,2}\/\d{4}|present|current))/gi, '$1 $2');
+
+  // Collapse multiple spaces
+  t = t.replace(/[ \t]+/g, ' ');
+
+  const lines = t.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // ── NAME ──
+  // First line that is ONLY 2-4 proper-name words (no digits, no punctuation except hyphen)
+  let name = '';
+  for (const l of lines.slice(0, 8)) {
+    const clean = l.replace(/[•●|,\-–—]/g, ' ').replace(/\s+/g,' ').trim();
+    const words = clean.split(' ');
+    const isName = words.length >= 2 && words.length <= 4
+      && words.every(w => /^[A-Z][a-zA-Z'\-]+$/.test(w))
+      && !/\d|@|http|profile|analyst|engineer|specialist|manager/i.test(clean);
+    if (isName) { name = clean; break; }
+  }
+  if (!name) name = 'Your Name';
+
+  // ── PHONE ──
+  // Handles: 646-484-1620 | (813) 410-7556 | 813.410.7556 | +1 813 410 7556
+  const phoneM = text.match(/(\+?1[\s.\-]?)?\(?\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4}/);
+  const phone  = phoneM ? phoneM[0].trim() : '(XXX) XXX-XXXX';
+
+  // ── EMAIL ──
+  const emailM = text.match(/[\w.+%-]+@[\w.-]+\.[a-zA-Z]{2,}/);
+  const email  = emailM ? emailM[0].trim() : 'email@example.com';
+
+  // ── LINKEDIN / GITHUB ──
+  const linkedinM = text.match(/linkedin\.com\/in\/[\w%-]+/i) || text.match(/linkedin\.com\/[\w/%-]+/i);
+  const githubM   = text.match(/github\.com\/[\w%-]+/i);
+  const linkedin  = linkedinM ? linkedinM[0].toLowerCase() : 'linkedin.com/in/yourprofile';
+  const github    = githubM   ? githubM[0] : '';
+
+  // ── LOCATION ──
+  let location = 'City, State';
+  for (const m of [...text.matchAll(/\b([A-Z][a-zA-Z]{2,20},\s*[A-Z]{2})\b/g)]) {
+    if (m[1].length < 35 && !/university|college|institute|wgu/i.test(m[1])) {
+      location = m[1].trim(); break;
+    }
+  }
+
+  // ── SUMMARY ──
+  // Find the block of text that follows the summary/profile header
+  const summarySection = extractSection(t, ['information technology profile','soc analyst profile','summary','profile','objective']);
+  const summaryLines = summarySection.split('\n').map(l => l.trim())
+    .filter(l => l.length > 40
+      && !/^(areas of expertise|technical proficiencies|education|certifications|•|●)/i.test(l));
+  const extractedSummary = summaryLines.slice(0,4).join(' ').trim();
+
+  // ── AREAS OF EXPERTISE ──
+  const expertiseSection = extractSection(t, ['areas of expertise','expertise','core competencies','competencies']);
+  const expertiseItems = expertiseSection.split('\n')
+    .map(l => l.replace(/^[●•▪\-]\s*/, '').trim())
+    .filter(l => l.length > 3 && l.length < 80
+      && !/^(technical|education|certif|experience|siem|threat|cyber|network|compliance)/i.test(l));
+
+  // ── TECHNICAL PROFICIENCIES ──
+  const techSection = extractSection(t, ['technical proficiencies','technical skills','proficiencies','skills']);
+  // After rejoining, lines should now be "Category: values"
+  const techLines = techSection.split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 5 && l.includes(':'));
+
+  // ── EDUCATION & CERTIFICATIONS ──
+  const eduCertSection = extractSection(t, ['education & certifications','education and certifications','education','certifications']);
+  const eduRe  = /bachelor|master|mba|associate|b\.s\.|m\.s\.|b\.a\.|m\.a\.|ph\.d|university|college|diploma|wgu|institute|high school/i;
+  const certRe = /security\+|network\+|a\+|cysa\+|pentest\+|casp|ceh|cissp|cism|cisa|oscp|sscp|giac|itil|comptia|clearance|secret/i;
+
+  const allEduCertLines = eduCertSection.split('\n')
+    .map(l => l.replace(/^[●•▪\-]\s*/, '').trim())
+    .filter(l => l.length > 5 && l.length < 200);
+
+  let education      = allEduCertLines.filter(l => eduRe.test(l)).slice(0,5);
+  let certifications = allEduCertLines.filter(l => certRe.test(l) && !eduRe.test(l)).slice(0,6);
+
+  // Clearance from full text
+  const clearanceM = text.match(/(active\s+)?(top\s+secret|secret)\s+(security\s+)?clearance/i);
+  if (clearanceM && !certifications.some(c => /clearance/i.test(c))) {
+    certifications.unshift(clearanceM[0].trim());
+  }
+
+  if (!education.length) education = ['Add your education here'];
+  if (!certifications.length) certifications = ['CompTIA Security+ (or in progress)'];
+
+  // ── WORK EXPERIENCE ──
+  const expSection = extractSection(t, ['professional experience','work experience','employment history','employment','work history']);
+  const jobs = parseJobs(expSection || t);
+
+  return { name, phone, email, linkedin, github, location,
+           extractedSummary, expertiseItems, techLines,
+           education, certifications, jobs };
+}
+
+// ── SECTION EXTRACTOR ──
+function extractSection(text, headerNames) {
+  const allMajorHeaders = [
+    'areas of expertise','technical proficiencies','education & certifications',
+    'education and certifications','education','certifications','professional experience',
+    'key projects','work experience','employment history','employment',
+    'information technology profile','soc analyst profile','summary','profile','objective',
+    'awards','recognition','skills','references','volunteer','clearance','additional'
+  ];
+  const lines = text.split('\n');
+  const esc   = h => h.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re    = new RegExp(`^\\s*(${headerNames.map(esc).join('|')})\\s*$`, 'i');
+  const reLax = new RegExp(`(${headerNames.map(esc).join('|')})`, 'i');
+
+  let start = -1, end = lines.length;
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if (start === -1 && (re.test(l) || (reLax.test(l) && l.length < 80))) {
+      start = i + 1; continue;
+    }
+    if (start > -1) {
+      const isHeader = allMajorHeaders.some(h =>
+        new RegExp(`^\\s*${esc(h)}\\s*$`,'i').test(l) ||
+        (new RegExp(`^${esc(h)}`,'i').test(l) && l.length < 80)
+      );
+      if (isHeader && i > start) { end = i; break; }
+    }
+  }
+  return start > -1 ? lines.slice(start, end).join('\n') : '';
+}
+
+// ── JOB PARSER ──
+function parseJobs(text) {
+  const skipHeaders = /^(key accomplishments|key contributions|key projects|education|certifications|technical proficiencies|areas of expertise|information technology profile|soc analyst profile|awards|recognition|references|veteran status|clearance|additional)/i;
+  const techLineRe  = /^(siem|threat detection|cyber defense|network & system|compliance & frame|operating systems|languages\/scripting|programming|cloud|monitoring|frameworks|ticketing)/i;
+
+  // Rejoin split date lines: "Lab Technician | Faulkner\n6/2015 – 12/2020"
+  let processed = text
+    .replace(/(\|[^\n]+)\n+\s*(\d{1,2}\/\d{4}\s*[–\-—]+\s*(?:\d{1,2}\/\d{4}|present|current))/gi, '$1 $2')
+    // Split fused bullets
+    .replace(/\.\s*[-–]\s+(?=[A-Z])/g, '.\n• ')
+    .replace(/\.\s*[•●]\s+/g, '.\n• ');
+
+  const lines = processed.split('\n').map(l => l.trim()).filter(Boolean);
+  const jobs = []; let cur = null;
+
+  const bulletRe = /^[●•▪▸◦✓\-]\s+/;
+  const dateRe   = /(\d{1,2}\/\d{4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\.?\s+\d{4}|\b\d{4})\s*(to|–|—|-)\s*(\d{1,2}\/\d{4}|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\.?\s+\d{4}|\d{4}|present|current)/i;
+  const titleRe  = /\b(analyst|architect|engineer|specialist|manager|director|coordinator|administrator|technician|consultant|developer|officer|lead|senior|junior|intern|support|security|auditor|sales|triplex|soc|noc|supervisor|sergeant|airman|operative)\b/i;
+
+  const isContactLine = l => /\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}/.test(l) && /[\w.+%-]+@[\w.-]+/.test(l);
+  const getDate       = l => { const m = l.match(dateRe); return m ? m[0].trim() : ''; };
+  const stripDate     = l => l.replace(dateRe,'').replace(/\s*[|]\s*$/,'').replace(/\s*[–—]\s*$/,'').trim();
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (isContactLine(line)) continue;
+    if (skipHeaders.test(line)) {
+      if (cur && cur.bullets.length) { jobs.push(cur); cur = null; }
+      continue;
+    }
+
+    if (bulletRe.test(line)) {
+      const b = line.replace(bulletRe,'').trim();
+      if (techLineRe.test(b)) continue;
+      if (/diploma|high school|associate of|bachelor|master|college|university/i.test(b)) continue;
+      if (/^(award|medal|ribbon|decoration|honor|clearance)/i.test(b) && b.length < 80) continue;
+      if (/^veteran status|honorably discharged|eligible for veterans/i.test(b)) continue;
+      if (b.length < 15) continue;
+      if (!cur) cur = { title:'', company:'', dates:'', desc:'', bullets:[] };
+      cur.bullets.push(b);
+
+    } else if (titleRe.test(line) && dateRe.test(line) && !isContactLine(line)) {
+      if (cur && cur.bullets.length) jobs.push(cur);
+      const dates = getDate(line);
+      const rest  = stripDate(line).replace(/\b[A-Z][a-zA-Z]+,\s*[A-Z]{2}\b/,'').trim();
+      const parts = rest.split(/\s*[|–—]\s*/);
+      cur = {
+        title:   (parts[0]||rest).trim(),
+        company: (parts[1]||'').replace(/\b[A-Z][a-zA-Z]+,\s*[A-Z]{2}\b/,'').trim(),
+        dates, desc:'', bullets:[]
+      };
+      // Peek: if next line is ONLY a date range, it's the date for this job
+      const next = lines[i+1]||'';
+      if (dateRe.test(next) && !titleRe.test(next) && next.length < 30) {
+        if (!cur.dates) cur.dates = getDate(next);
+        i++;
+      }
+      // Peek: if next line looks like company/location and we have no company yet
+      const next2 = lines[i+1]||'';
+      if (!cur.company && next2 && !bulletRe.test(next2) && !dateRe.test(next2)
+          && !skipHeaders.test(next2) && !isContactLine(next2) && next2.length < 120
+          && !titleRe.test(next2)) {
+        cur.company = next2.replace(/\b[A-Z][a-zA-Z]+,\s*[A-Z]{2}\b/,'').trim(); i++;
+      }
+
+    } else if (!isContactLine(line) && !skipHeaders.test(line) && !techLineRe.test(line)) {
+      if (cur && !bulletRe.test(line) && line.length > 20 && cur.bullets.length === 0) {
+        cur.desc = (cur.desc ? cur.desc + ' ' : '') + line;
+      } else if (titleRe.test(line) && line.length < 150) {
+        if (cur && cur.title && !cur.company && !dateRe.test(line)) {
+          cur.company = line.replace(/\b[A-Z][a-zA-Z]+,\s*[A-Z]{2}\b/,'').trim();
+        }
+      }
+    }
+  }
+
+  if (cur && cur.bullets.length) jobs.push(cur);
+
+  if (!jobs.length) {
+    jobs.push({
+      title:'IT Professional', company:'Your Company', dates:'20XX – Present', desc:'',
+      bullets:[
+        'Monitored network and endpoint security events using enterprise SIEM tools, responding to alerts and escalating incidents per established playbooks.',
+        'Collaborated with cross-functional teams to implement security controls and maintain compliance with organizational security policies.',
+        'Conducted vulnerability assessments and tracked remediation activities to reduce organizational risk exposure.'
+      ]
+    });
+  }
+  return jobs;
+}
+
+// ── BULLET ENHANCER ──
+function enhanceBullets(bullets, keywords, role) {
+  return bullets.map(b => {
+    b = ensureActionVerb(b);
+    if (!keywords.some(k => b.toLowerCase().includes(k.toLowerCase()))) {
+      const kw = keywords[Math.floor(Math.random()*Math.min(4,keywords.length))];
+      b = injectKeyword(b, kw);
+    }
+    return b;
+  });
+}
+
+function ensureActionVerb(b) {
+  const first = b.split(' ')[0];
+  if (/^[A-Z]/.test(first) && (first.endsWith('ed')||first.endsWith('ing')||first.endsWith('ted')||first.endsWith('zed')||first.endsWith('ped'))) return b;
+  let cat = 'manage';
+  if (/detect|monitor|watch|alert|scan|review/i.test(b))                  cat = 'detect';
+  else if (/respond|investigate|triage|contain|remediat|mitigat/i.test(b)) cat = 'respond';
+  else if (/build|deploy|install|configure|implement|architect|develop/i.test(b)) cat = 'build';
+  else if (/improve|reduce|optim|automat|enhanc|streamlin/i.test(b))      cat = 'improve';
+  else if (/report|document|communicat|present/i.test(b))                 cat = 'report';
+  else if (/protect|harden|secur|patch|enforce|remediat/i.test(b))        cat = 'protect';
+  const verb = VERBS[cat][Math.floor(Math.random()*VERBS[cat].length)];
+  if (/^(responsible|worked|assisted|helped|did|was|handled)/i.test(b))
+    return verb+' '+b.replace(/^(responsible\s+for|worked\s+on|assisted\s+with|helped|did|was|handled)\s*/i,'').trim().replace(/^\w/,c=>c.toLowerCase());
+  if (!/^[A-Z]/.test(first)||first.toLowerCase()===first)
+    return verb+' '+(b.charAt(0).toLowerCase()+b.slice(1));
+  return b;
+}
+
+function injectKeyword(b, kw) {
+  const opts = [
+    `, leveraging ${kw} methodologies`,
+    `, utilizing ${kw} tools and frameworks`,
+    ` to support ${kw} operations`,
+    ` in alignment with ${kw} best practices`
+  ];
+  return b.replace(/\.\s*$/,'') + opts[Math.floor(Math.random()*opts.length)] + '.';
+}
+
+// ── RESUME HTML BUILDER ──
+function buildResumeHTML(parsed, rd, role, exp, projs) {
+  // SUMMARY
+  const expLabel = exp==='Entry-Level' ? 'Detail-oriented, entry-level'
+                 : exp==='Senior'      ? 'Accomplished, senior-level'
+                 :                       'Results-driven, mid-level';
+  const summary = parsed.extractedSummary && parsed.extractedSummary.length > 60
+    ? parsed.extractedSummary
+    : rd.summary(parsed.name, expLabel);
+
+  // AREAS OF EXPERTISE
+  const expertiseToUse = parsed.expertiseItems && parsed.expertiseItems.length >= 3
+    ? parsed.expertiseItems : rd.expertise;
+  const expItems = expertiseToUse.map(e => `<div class="rv-exp-item">${esc(e)}</div>`).join('');
+
+  // TECHNICAL PROFICIENCIES
+  let techHTML = '';
+  if (parsed.techLines && parsed.techLines.length >= 2) {
+    techHTML = parsed.techLines.map(line => {
+      const ci = line.indexOf(':');
+      if (ci > -1) {
+        return `<div><span class="rv-tech-cat">${esc(line.slice(0,ci).trim())}:</span> ${esc(line.slice(ci+1).trim())}</div>`;
+      }
+      return `<div>${esc(line)}</div>`;
+    }).join('');
+  } else {
+    techHTML = Object.entries(rd.tech)
+      .map(([c,v]) => `<div><span class="rv-tech-cat">${esc(c)}:</span> ${esc(v)}</div>`)
+      .join('');
+  }
+
+  // EDUCATION & CERTIFICATIONS — combined section
+  const eduLines   = parsed.education.length     ? parsed.education     : ['Add your education here'];
+  const certLines  = parsed.certifications.length ? parsed.certifications: ['CompTIA Security+ (or in progress)'];
+  // Deduplicate certs
+  const certsSeen  = new Set();
+  const uniqueCerts = certLines.filter(c => {
+    const key = c.toLowerCase().replace(/\s+/g,'');
+    if (certsSeen.has(key)) return false;
+    certsSeen.add(key); return true;
+  });
+  const eduCertHTML = [
+    ...eduLines.map(e  => `<div class="rv-edu">▪ ${esc(e)}</div>`),
+    ...uniqueCerts.slice(0,6).map(c => `<div class="rv-cert">▪ ${esc(c)}</div>`)
+  ].join('');
+
+  // JOBS
+  const stopWords = /^(professional experience|work experience|key accomplishments|key contributions|veteran status|awards|education|certifications)/i;
+  const cleanJobs = parsed.jobs
+    .filter(j => {
+      const t = j.title.replace(/professional experience/gi,'').trim();
+      return t.length > 2 && !stopWords.test(t) && j.bullets.length > 0;
+    })
+    .map(j => ({
+      ...j,
+      title:   j.title.replace(/professional experience/gi,'').replace(/\s{2,}/g,' ').trim(),
+      company: (j.company||'').replace(/professional experience/gi,'').replace(/\s{2,}/g,' ').trim(),
+      bullets: [...new Set(j.bullets)].filter(b =>
+        b.length > 15 &&
+        !/^(veteran status|honorably discharged|eligible for veterans)/i.test(b) &&
+        !/^(award|medal|ribbon|decoration|honor|clearance)/i.test(b)
+      )
+    }))
+    .filter(j => j.bullets.length > 0);
+
+  const expHTML = cleanJobs.map(job => `
+    <div class="rv-job">
+      <div class="rv-job-hd">
+        <span class="rv-jtitle">${esc(job.title)}</span>
+        <span class="rv-jdate">${esc(job.dates)}</span>
+      </div>
+      <div class="rv-jcomp">${esc(job.company)}</div>
+      ${job.desc ? `<div class="rv-jdesc">${esc(job.desc)}</div>` : ''}
+      <ul class="rv-ul">${job.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+    </div>`).join('');
+
+  const projHTML = projs.map(p => `
+    <div class="rv-proj">
+      <div class="rv-ptitle">${esc(p.name)}</div>
+      <ul class="rv-ul">${p.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+      <div class="rv-ptech"><strong>Technologies:</strong> ${esc(p.tech)}</div>
+    </div>`).join('');
+
+  return `
+    <div class="rv-name">${esc(parsed.name)}</div>
+    <div class="rv-contact">
+      ${esc(parsed.phone)} &nbsp;•&nbsp;
+      ${esc(parsed.location)} &nbsp;•&nbsp;
+      ${esc(parsed.email)} &nbsp;•&nbsp;
+      ${esc(parsed.linkedin)}${parsed.github ? ' &nbsp;•&nbsp; ' + esc(parsed.github) : ''}
+    </div>
+    <div class="rv-sec">Information Technology Profile</div>
+    <div class="rv-summary">${esc(summary)}</div>
+    <div class="rv-sec">Areas of Expertise</div>
+    <div class="rv-exp-grid">${expItems}</div>
+    <div class="rv-sec">Technical Proficiencies</div>
+    <div class="rv-tech-grid">${techHTML}</div>
+    <div class="rv-sec">Education &amp; Certifications</div>
+    ${eduCertHTML}
+    <div class="rv-sec">Professional Experience</div>
+    ${expHTML || '<div class="rv-job"><div class="rv-jtitle">Add your experience here</div></div>'}
+    <div class="rv-sec">Key Projects</div>
+    ${projHTML}`;
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+// ─────────────────────────────────────────────
+// PDF EXPORT
+// ─────────────────────────────────────────────
+function dlPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  const el  = document.getElementById('resumeOut');
+  if (!el) { toast('Generate resume first','error'); return; }
+  let y=18; const lm=15,rm=195,pw=rm-lm;
+  const nameEl=el.querySelector('.rv-name');
+  doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.setTextColor(10,37,64);
+  doc.text(nameEl?.textContent||'',lm,y); y+=2;
+  doc.setLineWidth(0.7); doc.line(lm,y,rm,y); y+=5;
+  const contEl=el.querySelector('.rv-contact');
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+  doc.text(contEl?.textContent?.replace(/\s+/g,' ').trim()||'',lm,y,{maxWidth:pw}); y+=7;
+  el.querySelectorAll('.rv-sec').forEach(sec=>{
+    if (y>268){doc.addPage();y=18;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(10,37,64);
+    doc.text(sec.textContent.toUpperCase(),lm,y);
+    doc.setDrawColor(180,180,180); doc.setLineWidth(0.3); doc.line(lm,y+1,rm,y+1);
+    doc.setTextColor(30,30,30); y+=5;
+    let next=sec.nextElementSibling;
+    while(next&&!next.classList.contains('rv-sec')){
+      if (next.classList.contains('rv-summary')){
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        const wr=doc.splitTextToSize(next.textContent.trim(),pw);
+        if(y+wr.length*4.5>270){doc.addPage();y=18;}
+        doc.text(wr,lm,y); y+=wr.length*4.5+2;
+      } else if(next.classList.contains('rv-exp-grid')){
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        const items=next.querySelectorAll('.rv-exp-item');
+        const cols=3,colW=pw/cols; let col=0,rowY=y;
+        items.forEach(item=>{
+          if(col===0&&rowY>268){doc.addPage();rowY=18;}
+          doc.text('• '+item.textContent.replace('▪','').trim(),lm+col*colW,rowY,{maxWidth:colW-2});
+          col++; if(col>=cols){col=0;rowY+=5;}
+        });
+        y=rowY+(col>0?5:0)+2;
+      } else if(next.classList.contains('rv-tech-grid')){
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        next.querySelectorAll('div').forEach(d=>{
+          if(y>268){doc.addPage();y=18;}
+          const catEl=d.querySelector('.rv-tech-cat');
+          if(catEl){
+            const ct=catEl.textContent; const rest=d.textContent.replace(ct,'').trim();
+            doc.setFont('helvetica','bold'); doc.text(ct,lm,y);
+            doc.setFont('helvetica','normal'); doc.text(rest,lm+doc.getTextWidth(ct)+1,y);
+          } else doc.text(d.textContent,lm,y);
+          y+=4.5;
+        }); y+=2;
+      } else if(next.classList.contains('rv-edu')||next.classList.contains('rv-cert')){
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        if(y>268){doc.addPage();y=18;}
+        doc.text(next.textContent.replace('▪','•').trim(),lm,y); y+=4.5;
+      } else if(next.classList.contains('rv-job')){
+        if(y>250){doc.addPage();y=18;}
+        const ti=next.querySelector('.rv-jtitle')?.textContent||'';
+        const co=next.querySelector('.rv-jcomp')?.textContent||'';
+        const da=next.querySelector('.rv-jdate')?.textContent||'';
+        doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(10,37,64);
+        doc.text(ti,lm,y); doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+        doc.text(da,rm,y,{align:'right'}); y+=4;
+        doc.setFont('helvetica','italic'); doc.setTextColor(50,50,50); doc.text(co,lm,y); y+=4;
+        doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+        next.querySelectorAll('li').forEach(li=>{
+          if(y>268){doc.addPage();y=18;}
+          const wr=doc.splitTextToSize('• '+li.textContent.trim(),pw-5);
+          doc.text(wr,lm+3,y); y+=wr.length*4+1;
+        }); y+=3;
+      } else if(next.classList.contains('rv-proj')){
+        if(y>250){doc.addPage();y=18;}
+        const pt=next.querySelector('.rv-ptitle')?.textContent||'';
+        doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(10,37,64);
+        doc.text(pt,lm,y); y+=4;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,30);
+        next.querySelectorAll('li').forEach(li=>{
+          if(y>268){doc.addPage();y=18;}
+          const wr=doc.splitTextToSize('• '+li.textContent.trim(),pw-5);
+          doc.text(wr,lm+3,y); y+=wr.length*4+1;
+        });
+        const te=next.querySelector('.rv-ptech');
+        if(te){
+          if(y>268){doc.addPage();y=18;}
+          doc.setFont('helvetica','italic'); doc.setTextColor(100,100,100);
+          const wr=doc.splitTextToSize(te.textContent.trim(),pw);
+          doc.text(wr,lm,y); y+=wr.length*4+3;
+        }
+      }
+      next=next.nextElementSibling;
+    }
+    y+=1;
+  });
+  doc.save('cybersecurity-resume.pdf');
+  toast('PDF downloaded!','success');
+}
+
+// ─────────────────────────────────────────────
+// TXT EXPORT
+// ─────────────────────────────────────────────
+function dlDOCX() {
+  const el=document.getElementById('resumeOut');
+  if(!el){toast('Generate resume first','error');return;}
+  const lines=[];
+  const n=el.querySelector('.rv-name'); if(n) lines.push(n.textContent.trim().toUpperCase(),'');
+  const c=el.querySelector('.rv-contact'); if(c) lines.push(c.textContent.replace(/\s+/g,' ').trim(),'','');
+  el.querySelectorAll('.rv-sec').forEach(sec=>{
+    lines.push('',sec.textContent.trim().toUpperCase(),'─'.repeat(60));
+    let next=sec.nextElementSibling;
+    while(next&&!next.classList.contains('rv-sec')){
+      if(next.classList.contains('rv-summary')) lines.push(next.textContent.trim(),'');
+      else if(next.classList.contains('rv-exp-grid')) { next.querySelectorAll('.rv-exp-item').forEach(i=>lines.push('  • '+i.textContent.replace('▪','').trim())); lines.push('');}
+      else if(next.classList.contains('rv-tech-grid')) { next.querySelectorAll('div').forEach(d=>lines.push('  '+d.textContent.trim())); lines.push('');}
+      else if(next.classList.contains('rv-edu')||next.classList.contains('rv-cert')) lines.push('  '+next.textContent.replace('▪','•').trim());
+      else if(next.classList.contains('rv-job')){
+        const t=next.querySelector('.rv-jtitle')?.textContent||'';
+        const co=next.querySelector('.rv-jcomp')?.textContent||'';
+        const d=next.querySelector('.rv-jdate')?.textContent||'';
+        lines.push('',`${t}  |  ${co}  |  ${d}`);
+        next.querySelectorAll('li').forEach(li=>lines.push('  • '+li.textContent.trim())); lines.push('');
+      } else if(next.classList.contains('rv-proj')){
+        const pt=next.querySelector('.rv-ptitle')?.textContent||'';
+        lines.push('',pt); next.querySelectorAll('li').forEach(li=>lines.push('  • '+li.textContent.trim()));
+        const te=next.querySelector('.rv-ptech'); if(te) lines.push('  '+te.textContent.trim()); lines.push('');
+      }
+      next=next.nextElementSibling;
+    }
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='cybersecurity-resume.txt'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Downloaded as TXT — open in Word to format','success');
+}
+
+// ─────────────────────────────────────────────
+// COPY
+// ─────────────────────────────────────────────
+function doCopy() {
+  const el=document.getElementById('resumeOut');
+  if(!el){toast('Generate resume first','error');return;}
+  navigator.clipboard.writeText(el.innerText)
+    .then(()=>toast('Copied to clipboard! ✓','success'))
+    .catch(()=>{ const ta=document.createElement('textarea'); ta.value=el.innerText; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('Copied!','success'); });
+}
+
+// ─────────────────────────────────────────────
+// RESET
+// ─────────────────────────────────────────────
+function resetAll() {
+  clearFile(); selectedProjs.clear(); renderProjects();
+  ['u1','u2','u3'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('jobDescription').value='';
+  document.getElementById('roleSelect').value='';
+  document.getElementById('out').className='';
+  document.getElementById('progressPanel').classList.remove('show');
+  const btn=document.getElementById('genBtn'); btn.disabled=false; btn.textContent='🚀  Generate My Resume';
+  [1,2,3,4,5].forEach((n,i)=>setStep(n,i===0?'active':''));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+function toast(msg, type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type||'')+(type?' show':' show');
+  setTimeout(()=>t.className='toast',3200);
+}
+</script>
+</body>
+</html>
